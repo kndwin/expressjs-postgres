@@ -39,7 +39,7 @@ app.get('/redis', async (_, res) => {
 
 app.get('/jobs', async (_, res) => {
 	try {
-		const jobs = getAsync("cachedJobs")
+		const jobs = await getAsync("cachedJobs")
 		res.json(JSON.parse(jobs))
 	} catch (err) {
 		console.error(err)
@@ -47,10 +47,14 @@ app.get('/jobs', async (_, res) => {
 })
 
 app.get('/update', async (_, res) => {
-	console.log('updating jobs')
-  const jobs = await getJobs();
-	client.set("cachedJobs", JSON.stringify(jobs))
-	res.json({ jobs })
+	try {
+		console.log('updating jobs')
+		const jobs = await getJobs();
+		client.set("cachedJobs", JSON.stringify(jobs))
+		res.json(jobs)
+	} catch (err) {
+		console.error(err)
+	}
 })
 
 app.listen(port, () => {
