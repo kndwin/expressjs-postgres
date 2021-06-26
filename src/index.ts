@@ -1,4 +1,5 @@
 const { promisify } = require('util')
+import cors from 'cors'
 import bodyParser from "body-parser";
 import dotenv from 'dotenv'
 import redis from 'redis'
@@ -21,6 +22,7 @@ const setAsync = promisify(client.set).bind(client)
 app.use(bodyParser.json());
 app.use(bodyParser.raw({ type: "application/vnd.custom-type" }));
 app.use(bodyParser.text({ type: "text/html" }));
+app.use(cors({origin: "*"})) // should be careful haha, just useful for testing but could get spammed
 
 app.get("/", async (_, res) => {
   const { rows } = await pool.query("SELECT NOW()");
