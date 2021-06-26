@@ -5,6 +5,8 @@ import redis from 'redis'
 import express from "express";
 import pg from "pg";
 
+import getJobs from './scrap'
+
 dotenv.config()
 // Connect to the database using the DATABASE_URL environment variable injected by Railway
 const pool = new pg.Pool();
@@ -33,6 +35,21 @@ app.get('/redis', async (_, res) => {
 	} catch (err) {
 		console.error(err)
 	}
+})
+
+app.get('/getJobs', async (_, res) => {
+	try {
+		const jobs = getAsync("cachedJobs")
+		res.json(JSON.parse(jobs))
+	} catch (err) {
+		console.error(err)
+	}
+})
+
+app.get('updateJobs', async (_, res) => {
+	res.send(`manually triggering the update`)
+  const jobs = await getJobs();
+	client.set("cachedJobs", JSON.stringify(jobs))
 })
 
 app.listen(port, () => {
