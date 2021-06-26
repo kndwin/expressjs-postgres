@@ -37,7 +37,7 @@ app.get('/redis', async (_, res) => {
 	}
 })
 
-app.get('/getJobs', async (_, res) => {
+app.get('/jobs', async (_, res) => {
 	try {
 		const jobs = getAsync("cachedJobs")
 		res.json(JSON.parse(jobs))
@@ -46,10 +46,11 @@ app.get('/getJobs', async (_, res) => {
 	}
 })
 
-app.get('updateJobs', async (_, res) => {
-	res.send(`manually triggering the update`)
+app.get('/update', async (_, res) => {
+	console.log('updating jobs')
   const jobs = await getJobs();
 	client.set("cachedJobs", JSON.stringify(jobs))
+	res.json({ jobs })
 })
 
 app.listen(port, () => {
